@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro - Acerto Mensal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'debit': '#ef4444',
+                        'credit': '#22c55e',
+                        'settle': '#6366f1'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f8fafc; }
+        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .currency { font-family: 'Consolas', monospace; }
+        .settle-bg { background-image: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%); }
+        .accumulate-bg { background-image: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); }
+    </style>
+</head>
+<body class="pb-12 text-slate-700">
+
+    <!-- Header -->
+    <header class="bg-white sticky top-0 z-50 shadow-sm border-b border-slate-100">
+        <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-handshake text-indigo-500 mr-2"></i>Controle de Reembolso</h1>
+                <p class="text-xs text-slate-500">Kauê & Leide (Acerto dia 20)</p>
+            </div>
+            <div class="text-right">
+                <span class="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">2026</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-md mx-auto px-4 mt-6">
+        
+        <!-- Histórico Celular (Collapsible) -->
+        <div class="mb-8 bg-white rounded-xl card-shadow overflow-hidden border border-slate-100">
+            <button onclick="toggleHistory()" class="w-full px-4 py-3 flex justify-between items-center bg-slate-50 hover:bg-slate-100 transition-colors">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-sm">Histórico: Celular (Quitado)</span>
+                </div>
+                <i id="chevron-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+            </button>
+            <div id="history-content" class="hidden px-4 py-4 bg-slate-50 border-t border-slate-200">
+                <div class="space-y-3">
+                    <p class="text-xs text-slate-500">14 Parcelas de R$ 140,00 (Total: R$ 1.960,00)</p>
+                    <div class="grid grid-cols-2 gap-2 text-[10px] uppercase tracking-wide font-medium">
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 24/03/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 21/04/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 23/05/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 21/06/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 24/07/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 22/08/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 09/09/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 26/09/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 10/10/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 31/10/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 14/11/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 06/12/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700 font-bold"><i class="fa-solid fa-calendar-check mr-1"></i> 09/01/26</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700 font-bold"><i class="fa-solid fa-calendar-check mr-1"></i> 23/01/26</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legenda -->
+        <div class="flex gap-4 mb-6 text-xs text-slate-500 justify-center">
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-red-500 mr-1"></span> Cartão (Dia 16)</span>
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-1"></span> Serviço</span>
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-indigo-500 mr-1"></span> Acerto (Dia 20)</span>
+        </div>
+
+        <!-- Timeline Dinâmica -->
+        <div id="timeline-container" class="space-y-8 relative pl-4 pb-12">
+            <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-200 -z-10"></div>
+            <!-- JS vai injetar os meses aqui -->
+        </div>
+
+    </div>
+
+    <script>
+        // --- HELPERS ---
+        function pad(n) {
+            return n < 10 ? '0' + n : n;
+        }
+
+        function formatDate(date) {
+            return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}`;
+        }
+
+        function formatBRL(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function getMonthName(monthIndex) {
+            const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            return months[monthIndex];
+        }
+
+        // --- CONFIGURAÇÃO DE DADOS ---
+        const debts = [];
+        const services = [];
+        
+        // 1. DÍVIDAS
+        // Geladeira (Jan a Out 2026)
+        for (let i = 0; i < 10; i++) {
+            debts.push({
+                desc: `Geladeira (Parcela ${pad(i+1)} de 10)`,
+                value: 266.39,
+                date: new Date(2026, 0 + i, 16),
+                type: 'fridge'
+            });
+        }
+
+        // Panobianco
+        debts.push({ desc: `Panobianco (Adesão)`, value: 9.90, date: new Date(2026, 1, 16), type: 'gym' });
+        for (let i = 0; i < 11; i++) {
+            debts.push({
+                desc: `Panobianco (Parcela ${pad(i+1)} de 11)`,
+                value: 119.90,
+                date: new Date(2026, 2 + i, 16),
+                type: 'gym'
+            });
+        }
+
+        // 2. SERVIÇOS
+        // Janeiro: Serviços simbólicos (Pagamento Celular) - Duas datas
+        services.push({
+            desc: `Pagamento Celular`,
+            value: 0.00,
+            date: new Date(2026, 0, 9), 
+            type: 'service'
+        });
+        services.push({
+            desc: `Pagamento Celular`,
+            value: 0.00,
+            date: new Date(2026, 0, 23),
+            type: 'service'
+        });
+
+        // Loop Serviços (Máximo 2 por mês, a partir de 06/Fev)
+        let nextServiceDate = new Date(2026, 1, 6); // 06 Fev
+        const endDate = new Date(2027, 0, 16); 
+
+        while (nextServiceDate <= endDate) {
+            // Lógica para evitar 3 serviços no mesmo mês
+            const currentMonth = nextServiceDate.getMonth();
+            const date2 = new Date(nextServiceDate); date2.setDate(date2.getDate() + 14);
+            const date3 = new Date(nextServiceDate); date3.setDate(date3.getDate() + 28);
+
+            if (currentMonth === date2.getMonth() && currentMonth === date3.getMonth()) {
+                // Adiar 1 semana para pular ciclo de 3
+                nextServiceDate.setDate(nextServiceDate.getDate() + 7);
+            }
+
+            services.push({
+                desc: `Serviço`,
+                value: 190.00,
+                date: new Date(nextServiceDate),
+                type: 'service'
+            });
+
+            nextServiceDate.setDate(nextServiceDate.getDate() + 14);
+        }
+
+        // --- RENDERIZAÇÃO ---
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            const startMonth = new Date(2026, 0, 1);
+            const endMonth = new Date(2027, 0, 1); 
+            
+            let current = new Date(startMonth);
+            let carryOver = 0; // Saldo que passa para o próximo mês
+
+            while (current <= endMonth) {
+                const year = current.getFullYear();
+                const month = current.getMonth();
+                const isJan26 = (year === 2026 && month === 0);
+                
+                const monthDebts = debts.filter(d => d.date.getMonth() === month && d.date.getFullYear() === year);
+                const monthServices = services.filter(s => s.date.getMonth() === month && s.date.getFullYear() === year);
+
+                if (monthDebts.length === 0 && monthServices.length === 0 && carryOver === 0) {
+                    current.setMonth(current.getMonth() + 1);
+                    continue;
+                }
+
+                const totalDebt = monthDebts.reduce((acc, cur) => acc + cur.value, 0);
+                const totalService = monthServices.reduce((acc, cur) => acc + cur.value, 0);
+                
+                // Cálculo do Saldo Final do Mês (incluindo o que veio do anterior)
+                const monthNet = totalService - totalDebt;
+                const finalBalance = monthNet + carryOver; 
+
+                const monthCard = document.createElement('div');
+                monthCard.className = 'bg-white rounded-xl card-shadow p-5 relative z-10 ml-4 border border-slate-100';
+                
+                const timelineDot = document.createElement('div');
+                timelineDot.className = `absolute -left-[25px] top-6 w-4 h-4 rounded-full border-2 border-white ${finalBalance >= 0 ? 'bg-indigo-400' : 'bg-red-400'}`;
+                monthCard.appendChild(timelineDot);
+
+                let debtsHtml = monthDebts.map(d => `
+                    <div class="flex justify-between items-center text-xs text-red-600 mb-2 last:mb-0">
+                        <span class="flex items-center font-medium"><i class="fa-solid fa-calendar-xmark w-5 text-red-300"></i> ${formatDate(d.date)} - ${d.desc}</span>
+                        <span class="font-bold">-${formatBRL(d.value)}</span>
+                    </div>
+                `).join('');
+
+                let servicesHtml = monthServices.map(s => `
+                    <div class="flex justify-between items-center text-xs text-green-600 mb-2 last:mb-0">
+                        <span class="flex items-center font-medium"><i class="fa-solid fa-calendar-check w-5 text-green-300"></i> ${formatDate(s.date)} - ${s.desc}</span>
+                        <span class="font-bold">+${formatBRL(s.value)}</span>
+                    </div>
+                `).join('');
+
+                if (!debtsHtml) debtsHtml = '<div class="text-xs text-slate-300 italic pl-5">Sem cobranças.</div>';
+                if (!servicesHtml) servicesHtml = '<div class="text-xs text-slate-300 italic pl-5">Sem serviços.</div>';
+
+                // Carry Over HTML (Se veio saldo do mês anterior)
+                let carryOverHtml = '';
+                if (Math.abs(carryOver) > 0.01) {
+                    carryOverHtml = `
+                        <div class="flex justify-between items-center text-xs text-slate-500 mb-2 border-b border-slate-100 pb-2 border-dashed">
+                            <span class="flex items-center font-medium italic"><i class="fa-solid fa-turn-down w-5 text-slate-300"></i> Saldo anterior (Jan)</span>
+                            <span class="font-bold ${carryOver >= 0 ? 'text-green-500' : 'text-red-500'}">${carryOver >= 0 ? '+' : ''}${formatBRL(carryOver)}</span>
+                        </div>
+                    `;
+                }
+
+                // Lógica de Acerto ou Acúmulo
+                let settlementHtml = '';
+
+                if (isJan26) {
+                    // JANEIRO: Acumula para Fevereiro
+                    carryOver = finalBalance; // Passa o saldo total para o próximo loop
+                    settlementHtml = `
+                        <div class="text-[10px] uppercase font-bold text-amber-500 mb-1">Acúmulo para Próximo Mês</div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-500">
+                                <i class="fa-solid fa-hourglass-half"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-500">Valor de Janeiro a ser pago em <strong class="text-slate-700">Fevereiro</strong>:</div>
+                                <div class="text-lg font-bold text-amber-500">${formatBRL(finalBalance)}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // OUTROS MESES: Zera a conta
+                    carryOver = 0; // Zera para o mês seguinte começar limpo
+                    
+                    if (Math.abs(finalBalance) < 0.01) {
+                        settlementHtml = `
+                            <div class="text-indigo-600 font-bold flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-lg"></i> Contas Zeradas!
+                            </div>
+                            <div class="text-[10px] text-indigo-400">Ninguém deve nada este mês.</div>
+                        `;
+                    } else if (finalBalance > 0) {
+                        // Kauê paga Leide
+                        settlementHtml = `
+                            <div class="text-[10px] uppercase font-bold text-indigo-400 mb-1">Sugestão de Acerto (Dia 20)</div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-500">Kauê transfere para <strong class="text-slate-700">Leide</strong>:</div>
+                                    <div class="text-lg font-bold text-indigo-600">${formatBRL(finalBalance)}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        // Leide paga Kauê
+                        settlementHtml = `
+                            <div class="text-[10px] uppercase font-bold text-red-400 mb-1">Sugestão de Acerto (Dia 20)</div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-500">
+                                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-500">Leide transfere para <strong class="text-slate-700">Kauê</strong>:</div>
+                                    <div class="text-lg font-bold text-red-500">${formatBRL(Math.abs(finalBalance))}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                monthCard.innerHTML = `
+                    <div class="flex justify-between items-end mb-4 border-b border-slate-100 pb-2">
+                        <h3 class="font-bold text-xl text-slate-700 capitalize">${getMonthName(month)}</h3>
+                        <span class="text-xs font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded">${year}</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Saldo Anterior (Se houver) -->
+                        ${carryOverHtml}
+
+                        <!-- Débitos -->
+                        <div>
+                            <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Cartão de Crédito (Saídas)</h4>
+                            ${debtsHtml}
+                        </div>
+
+                        <!-- Créditos -->
+                        <div>
+                            <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Serviços Prestados (Entradas)</h4>
+                            ${servicesHtml}
+                        </div>
+                    </div>
+
+                    <!-- Bloco de Acerto -->
+                    <div class="mt-6 pt-4 border-t border-dashed border-slate-200">
+                        <div class="${isJan26 ? 'accumulate-bg border-amber-50' : 'settle-bg border-indigo-50'} rounded-lg p-4 border">
+                            ${settlementHtml}
+                        </div>
+                        <div class="text-center mt-2">
+                             <span class="text-[10px] text-slate-400 italic">
+                                ${isJan26 ? 'Valor será somado ao acerto de Fevereiro.' : 'Ao realizar este acerto, o mês zera.'}
+                             </span>
+                        </div>
+                    </div>
+                `;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative';
+                wrapper.appendChild(monthCard);
+                container.appendChild(wrapper);
+
+                current.setMonth(current.getMonth() + 1);
+            }
+        }
+
+        function toggleHistory() {
+            const content = document.getElementById('history-content');
+            const icon = document.getElementById('chevron-icon');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        renderTimeline();
+    </script>
+</body>
+</html>
