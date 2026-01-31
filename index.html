@@ -138,6 +138,16 @@
             });
         }
 
+        // NOVO: Serviço Extra (Cartão) - Jan, Fev, Mar
+        for (let i = 0; i < 3; i++) {
+            debts.push({
+                desc: `Serviço Extra (Cartão)`,
+                value: 12.50,
+                date: new Date(2026, i, 16),
+                type: 'extra'
+            });
+        }
+
         // 2. SERVIÇOS
         // Janeiro: Serviços simbólicos (Pagamento Celular) - Duas datas
         services.push({
@@ -152,6 +162,16 @@
             date: new Date(2026, 0, 23),
             type: 'service'
         });
+
+        // NOVO: Crédito do Serviço Extra - Jan, Fev, Mar (Compensação)
+        for (let i = 0; i < 3; i++) {
+            services.push({
+                desc: `Crédito Serviço Extra`,
+                value: 12.50,
+                date: new Date(2026, i, 16),
+                type: 'extra_credit'
+            });
+        }
 
         // Loop Serviços (Máximo 2 por mês, a partir de 06/Fev)
         let nextServiceDate = new Date(2026, 1, 6); // 06 Fev
@@ -192,8 +212,14 @@
                 const month = current.getMonth();
                 const isJan26 = (year === 2026 && month === 0);
                 
-                const monthDebts = debts.filter(d => d.date.getMonth() === month && d.date.getFullYear() === year);
-                const monthServices = services.filter(s => s.date.getMonth() === month && s.date.getFullYear() === year);
+                // Filtra e ORDENA por data para exibição correta
+                const monthDebts = debts
+                    .filter(d => d.date.getMonth() === month && d.date.getFullYear() === year)
+                    .sort((a, b) => a.date - b.date);
+                    
+                const monthServices = services
+                    .filter(s => s.date.getMonth() === month && s.date.getFullYear() === year)
+                    .sort((a, b) => a.date - b.date);
 
                 if (monthDebts.length === 0 && monthServices.length === 0 && carryOver === 0) {
                     current.setMonth(current.getMonth() + 1);
