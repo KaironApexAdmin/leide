@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle Financeiro - Acerto Mensal</title>
+    <title>Controle Financeiro - Acerto Mensal (v2)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>
@@ -20,20 +21,37 @@
         }
     </script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f8fafc; }
-        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-        .currency { font-family: 'Consolas', monospace; }
-        .settle-bg { background-image: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%); }
-        .accumulate-bg { background-image: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .currency {
+            font-family: 'Consolas', monospace;
+        }
+
+        .settle-bg {
+            background-image: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+        }
+
+        .accumulate-bg {
+            background-image: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        }
     </style>
 </head>
+
 <body class="pb-12 text-slate-700">
 
     <!-- Header -->
     <header class="bg-white sticky top-0 z-50 shadow-sm border-b border-slate-100">
         <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-handshake text-indigo-500 mr-2"></i>Controle de Reembolso</h1>
+                <h1 class="text-lg font-bold text-slate-800"><i
+                        class="fa-solid fa-handshake text-indigo-500 mr-2"></i>Controle de Reembolso</h1>
                 <p class="text-xs text-slate-500">Kauê & Leide (Acerto dia 20)</p>
             </div>
             <div class="text-right">
@@ -43,12 +61,14 @@
     </header>
 
     <div class="max-w-md mx-auto px-4 mt-6">
-        
+
         <!-- Histórico Celular (Collapsible) -->
         <div class="mb-8 bg-white rounded-xl card-shadow overflow-hidden border border-slate-100">
-            <button onclick="toggleHistory()" class="w-full px-4 py-3 flex justify-between items-center bg-slate-50 hover:bg-slate-100 transition-colors">
+            <button onclick="toggleHistory()"
+                class="w-full px-4 py-3 flex justify-between items-center bg-slate-50 hover:bg-slate-100 transition-colors">
                 <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs">
+                    <div
+                        class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs">
                         <i class="fa-solid fa-check"></i>
                     </div>
                     <span class="font-bold text-slate-700 text-sm">Histórico: Celular (Quitado)</span>
@@ -59,20 +79,34 @@
                 <div class="space-y-3">
                     <p class="text-xs text-slate-500">14 Parcelas de R$ 140,00 (Total: R$ 1.960,00)</p>
                     <div class="grid grid-cols-2 gap-2 text-[10px] uppercase tracking-wide font-medium">
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 24/03/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 21/04/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 23/05/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 21/06/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 24/07/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 22/08/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 09/09/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 26/09/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 10/10/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 31/10/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 14/11/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i class="fa-solid fa-calendar-check mr-1"></i> 06/12/25</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700 font-bold"><i class="fa-solid fa-calendar-check mr-1"></i> 09/01/26</div>
-                        <div class="bg-white p-2 rounded border border-green-200 text-green-700 font-bold"><i class="fa-solid fa-calendar-check mr-1"></i> 23/01/26</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 24/03/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 21/04/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 23/05/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 21/06/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 24/07/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 22/08/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 09/09/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 26/09/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 10/10/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 31/10/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 14/11/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 06/12/25</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700 font-bold"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 09/01/26</div>
+                        <div class="bg-white p-2 rounded border border-green-200 text-green-700 font-bold"><i
+                                class="fa-solid fa-calendar-check mr-1"></i> 23/01/26</div>
                     </div>
                 </div>
             </div>
@@ -80,9 +114,11 @@
 
         <!-- Legenda -->
         <div class="flex gap-4 mb-6 text-xs text-slate-500 justify-center">
-            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-red-500 mr-1"></span> Cartão (Dia 16)</span>
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-red-500 mr-1"></span> Cartão (Dia
+                16)</span>
             <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-1"></span> Serviço</span>
-            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-indigo-500 mr-1"></span> Acerto (Dia 20)</span>
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-indigo-500 mr-1"></span> Acerto (Dia
+                20)</span>
         </div>
 
         <!-- Timeline Dinâmica -->
@@ -115,12 +151,12 @@
         // --- CONFIGURAÇÃO DE DADOS ---
         const debts = [];
         const services = [];
-        
+
         // 1. DÍVIDAS
         // Geladeira (Jan a Out 2026)
         for (let i = 0; i < 10; i++) {
             debts.push({
-                desc: `Geladeira (Parcela ${pad(i+1)} de 10)`,
+                desc: `Geladeira (Parcela ${pad(i + 1)} de 10)`,
                 value: 266.39,
                 date: new Date(2026, 0 + i, 16),
                 type: 'fridge'
@@ -131,7 +167,7 @@
         debts.push({ desc: `Panobianco (Adesão)`, value: 9.90, date: new Date(2026, 1, 16), type: 'gym' });
         for (let i = 0; i < 11; i++) {
             debts.push({
-                desc: `Panobianco (Parcela ${pad(i+1)} de 11)`,
+                desc: `Panobianco (Parcela ${pad(i + 1)} de 11)`,
                 value: 119.90,
                 date: new Date(2026, 2 + i, 16),
                 type: 'gym'
@@ -148,12 +184,16 @@
             });
         }
 
+        // Produtos Scot (2 parcelas)
+        debts.push({ desc: 'Produtos Scot (Parcela 01 de 02)', value: 58.05, date: new Date(2026, 2, 16), type: 'scot' });
+        debts.push({ desc: 'Produtos Scot (Parcela 02 de 02)', value: 58.05, date: new Date(2026, 3, 16), type: 'scot' });
+
         // 2. SERVIÇOS
         // Janeiro: Serviços simbólicos (Pagamento Celular) - Duas datas
         services.push({
             desc: `Pagamento Celular`,
             value: 0.00,
-            date: new Date(2026, 0, 9), 
+            date: new Date(2026, 0, 9),
             type: 'service'
         });
         services.push({
@@ -173,9 +213,13 @@
             });
         }
 
-        // Loop Serviços (Máximo 2 por mês, a partir de 06/Fev)
-        let nextServiceDate = new Date(2026, 1, 6); // 06 Fev
-        const endDate = new Date(2027, 0, 16); 
+        // Fevereiro: 2 serviços com datas reais (06/02 e 27/02)
+        services.push({ desc: `Serviço`, value: 190.00, date: new Date(2026, 1, 6), type: 'service' });
+        services.push({ desc: `Serviço`, value: 190.00, date: new Date(2026, 1, 27), type: 'service' });
+
+        // Loop Serviços (Máximo 2 por mês, a partir de 06/Mar)
+        let nextServiceDate = new Date(2026, 2, 6); // 06 Mar
+        const endDate = new Date(2027, 0, 16);
 
         while (nextServiceDate <= endDate) {
             // Lógica para evitar 3 serviços no mesmo mês
@@ -202,8 +246,8 @@
         function renderTimeline() {
             const container = document.getElementById('timeline-container');
             const startMonth = new Date(2026, 0, 1);
-            const endMonth = new Date(2027, 0, 1); 
-            
+            const endMonth = new Date(2027, 0, 1);
+
             let current = new Date(startMonth);
             let carryOver = 0; // Saldo que passa para o próximo mês
 
@@ -211,12 +255,12 @@
                 const year = current.getFullYear();
                 const month = current.getMonth();
                 const isJan26 = (year === 2026 && month === 0);
-                
+
                 // Filtra e ORDENA por data para exibição correta
                 const monthDebts = debts
                     .filter(d => d.date.getMonth() === month && d.date.getFullYear() === year)
                     .sort((a, b) => a.date - b.date);
-                    
+
                 const monthServices = services
                     .filter(s => s.date.getMonth() === month && s.date.getFullYear() === year)
                     .sort((a, b) => a.date - b.date);
@@ -228,14 +272,14 @@
 
                 const totalDebt = monthDebts.reduce((acc, cur) => acc + cur.value, 0);
                 const totalService = monthServices.reduce((acc, cur) => acc + cur.value, 0);
-                
+
                 // Cálculo do Saldo Final do Mês (incluindo o que veio do anterior)
                 const monthNet = totalService - totalDebt;
-                const finalBalance = monthNet + carryOver; 
+                const finalBalance = monthNet + carryOver;
 
                 const monthCard = document.createElement('div');
                 monthCard.className = 'bg-white rounded-xl card-shadow p-5 relative z-10 ml-4 border border-slate-100';
-                
+
                 const timelineDot = document.createElement('div');
                 timelineDot.className = `absolute -left-[25px] top-6 w-4 h-4 rounded-full border-2 border-white ${finalBalance >= 0 ? 'bg-indigo-400' : 'bg-red-400'}`;
                 monthCard.appendChild(timelineDot);
@@ -289,7 +333,7 @@
                 } else {
                     // OUTROS MESES: Zera a conta
                     carryOver = 0; // Zera para o mês seguinte começar limpo
-                    
+
                     if (Math.abs(finalBalance) < 0.01) {
                         settlementHtml = `
                             <div class="text-indigo-600 font-bold flex items-center gap-2">
@@ -388,4 +432,5 @@
         renderTimeline();
     </script>
 </body>
+
 </html>
