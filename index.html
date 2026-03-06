@@ -184,9 +184,9 @@
             });
         }
 
-        // Produtos Skank (2 parcelas)
-        debts.push({ desc: 'Produtos Skank (Parcela 01 de 02)', value: 58.05, date: new Date(2026, 2, 16), type: 'Skank' });
-        debts.push({ desc: 'Produtos Skank (Parcela 02 de 02)', value: 58.05, date: new Date(2026, 3, 16), type: 'Skank' });
+        // Produtos Scot (2 parcelas)
+        debts.push({ desc: 'Produtos Scot (Parcela 01 de 02)', value: 58.05, date: new Date(2026, 2, 16), type: 'scot' });
+        debts.push({ desc: 'Produtos Scot (Parcela 02 de 02)', value: 58.05, date: new Date(2026, 3, 16), type: 'scot' });
 
         // 2. SERVIÇOS
         // Janeiro: Serviços simbólicos (Pagamento Celular) - Duas datas
@@ -217,8 +217,11 @@
         services.push({ desc: `Serviço`, value: 190.00, date: new Date(2026, 1, 6), type: 'service' });
         services.push({ desc: `Serviço`, value: 190.00, date: new Date(2026, 1, 27), type: 'service' });
 
-        // Loop Serviços (Máximo 2 por mês, a partir de 06/Mar)
-        let nextServiceDate = new Date(2026, 2, 6); // 06 Mar
+        // Março: Crédito avulso recebido hoje (06/03)
+        services.push({ desc: `Crédito Avulso`, value: 44.52, date: new Date(2026, 2, 6), type: 'credit_avulso' });
+
+        // Loop Serviços (Máximo 2 por mês, a partir de 13/Mar)
+        let nextServiceDate = new Date(2026, 2, 13); // 13 Mar
         const endDate = new Date(2027, 0, 16);
 
         while (nextServiceDate <= endDate) {
@@ -254,7 +257,11 @@
             while (current <= endMonth) {
                 const year = current.getFullYear();
                 const month = current.getMonth();
+                // Janeiro e Fevereiro acumulam; Março mostra snapshot de hoje
                 const isJan26 = (year === 2026 && month === 0);
+                const isFeb26 = (year === 2026 && month === 1);
+                const isMar26 = (year === 2026 && month === 2);
+                const isAccumMonth = isJan26 || isFeb26;
 
                 // Filtra e ORDENA por data para exibição correta
                 const monthDebts = debts
@@ -271,7 +278,11 @@
                 }
 
                 const totalDebt = monthDebts.reduce((acc, cur) => acc + cur.value, 0);
-                const totalService = monthServices.reduce((acc, cur) => acc + cur.value, 0);
+                // For March: exclude credit_avulso from settlement calc (it's zeroed out today via snapshot)
+                const settlementServices = isMar26
+                    ? monthServices.filter(s => s.type !== 'credit_avulso')
+                    : monthServices;
+                const totalService = settlementServices.reduce((acc, cur) => acc + cur.value, 0);
 
                 // Cálculo do Saldo Final do Mês (incluindo o que veio do anterior)
                 const monthNet = totalService - totalDebt;
@@ -291,7 +302,7 @@
                     </div>
                 `).join('');
 
-                let servicesHtml = monthServices.map(s => `
+                let servicesHtml = monthServices.filter(s => s.type !== 'credit_avulso').map(s => `
                     <div class="flex justify-between items-center text-xs text-green-600 mb-2 last:mb-0">
                         <span class="flex items-center font-medium"><i class="fa-solid fa-calendar-check w-5 text-green-300"></i> ${formatDate(s.date)} - ${s.desc}</span>
                         <span class="font-bold">+${formatBRL(s.value)}</span>
@@ -301,12 +312,13 @@
                 if (!debtsHtml) debtsHtml = '<div class="text-xs text-slate-300 italic pl-5">Sem cobranças.</div>';
                 if (!servicesHtml) servicesHtml = '<div class="text-xs text-slate-300 italic pl-5">Sem serviços.</div>';
 
-                // Carry Over HTML (Se veio saldo do mês anterior)
+                // Carry Over HTML — hidden for March (carry-over treated as zeroed today)
                 let carryOverHtml = '';
-                if (Math.abs(carryOver) > 0.01) {
+                const prevMonthName = getMonthName(month === 0 ? 11 : month - 1);
+                if (Math.abs(carryOver) > 0.01 && !isMar26) {
                     carryOverHtml = `
                         <div class="flex justify-between items-center text-xs text-slate-500 mb-2 border-b border-slate-100 pb-2 border-dashed">
-                            <span class="flex items-center font-medium italic"><i class="fa-solid fa-turn-down w-5 text-slate-300"></i> Saldo anterior (Jan)</span>
+                            <span class="flex items-center font-medium italic"><i class="fa-solid fa-turn-down w-5 text-slate-300"></i> Saldo anterior (${prevMonthName})</span>
                             <span class="font-bold ${carryOver >= 0 ? 'text-green-500' : 'text-red-500'}">${carryOver >= 0 ? '+' : ''}${formatBRL(carryOver)}</span>
                         </div>
                     `;
@@ -315,33 +327,69 @@
                 // Lógica de Acerto ou Acúmulo
                 let settlementHtml = '';
 
-                if (isJan26) {
-                    // JANEIRO: Acumula para Fevereiro
-                    carryOver = finalBalance; // Passa o saldo total para o próximo loop
+                // Today snapshot for March (carryOver = Feb balance + today's credit)
+                let todaySnapshotHtml = '';
+                if (isMar26 && Math.abs(carryOver) > 0.01) {
+                    const todayCreditMar = 44.52;
+                    const todayBalance = carryOver + todayCreditMar;
+                    const todayDir = todayBalance >= 0
+                        ? `Kauê transfere para <strong>Leide</strong>`
+                        : `Leide transfere para <strong>Kauê</strong>`;
+                    todaySnapshotHtml = `
+                        <div class="mb-5 p-4 bg-gradient-to-br from-sky-50 to-indigo-50 rounded-xl border border-sky-100">
+                            <div class="text-[10px] uppercase font-bold text-sky-500 mb-3">📍 Situação de Hoje — 06/03</div>
+                            <div class="space-y-1.5 text-xs mb-3">
+                                <div class="flex justify-between text-slate-500">
+                                    <span class="italic">Saldo de Fevereiro</span>
+                                    <span class="font-mono font-bold ${carryOver >= 0 ? 'text-green-500' : 'text-red-400'}">${carryOver >= 0 ? '+' : ''}${formatBRL(carryOver)}</span>
+                                </div>
+                                <div class="flex justify-between text-slate-500">
+                                    <span>Crédito de hoje</span>
+                                    <span class="font-mono font-bold text-green-500">+${formatBRL(todayCreditMar)}</span>
+                                </div>
+                                <div class="flex justify-between font-bold text-slate-700 pt-2 border-t border-sky-100">
+                                    <span>Saldo de hoje</span>
+                                    <span class="font-mono text-base ${todayBalance >= 0 ? 'text-green-600' : 'text-red-500'}">${todayBalance >= 0 ? '+' : ''}${formatBRL(todayBalance)}</span>
+                                </div>
+                            </div>
+                            <div class="text-[11px] text-sky-500">${todayDir}: <span class="font-bold">${formatBRL(Math.abs(todayBalance))}</span></div>
+                        </div>
+                    `;
+                }
+
+                if (isAccumMonth) {
+                    // JANEIRO e FEVEREIRO: Acumulam
+                    carryOver = finalBalance;
+                    const nextMonthName = getMonthName(month + 1);
+                    const accumLabel = isFeb26
+                        ? `Saldo de Fevereiro sendo considerado em <strong class="text-slate-700">${nextMonthName}</strong>`
+                        : `Saldo de Janeiro sendo considerado em <strong class="text-slate-700">${nextMonthName}</strong>`;
                     settlementHtml = `
-                        <div class="text-[10px] uppercase font-bold text-amber-500 mb-1">Acúmulo para Próximo Mês</div>
+                        <div class="text-[10px] uppercase font-bold text-amber-500 mb-1">Saldo em Aberto</div>
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-500">
                                 <i class="fa-solid fa-hourglass-half"></i>
                             </div>
                             <div>
-                                <div class="text-xs text-slate-500">Valor de Janeiro a ser pago em <strong class="text-slate-700">Fevereiro</strong>:</div>
+                                <div class="text-xs text-slate-500">${accumLabel}:</div>
                                 <div class="text-lg font-bold text-amber-500">${formatBRL(finalBalance)}</div>
                             </div>
                         </div>
                     `;
                 } else {
                     // OUTROS MESES: Zera a conta
-                    carryOver = 0; // Zera para o mês seguinte começar limpo
+                    // Março: carry-over zerado hoje (06/03), acerto do dia 20 considera apenas o saldo do próprio mês
+                    const settlementBalance = isMar26 ? monthNet : finalBalance;
+                    carryOver = 0;
 
-                    if (Math.abs(finalBalance) < 0.01) {
+                    if (Math.abs(settlementBalance) < 0.01) {
                         settlementHtml = `
                             <div class="text-indigo-600 font-bold flex items-center gap-2">
                                 <i class="fa-solid fa-check-circle text-lg"></i> Contas Zeradas!
                             </div>
                             <div class="text-[10px] text-indigo-400">Ninguém deve nada este mês.</div>
                         `;
-                    } else if (finalBalance > 0) {
+                    } else if (settlementBalance > 0) {
                         // Kauê paga Leide
                         settlementHtml = `
                             <div class="text-[10px] uppercase font-bold text-indigo-400 mb-1">Sugestão de Acerto (Dia 20)</div>
@@ -351,7 +399,7 @@
                                 </div>
                                 <div>
                                     <div class="text-xs text-slate-500">Kauê transfere para <strong class="text-slate-700">Leide</strong>:</div>
-                                    <div class="text-lg font-bold text-indigo-600">${formatBRL(finalBalance)}</div>
+                                    <div class="text-lg font-bold text-indigo-600">${formatBRL(settlementBalance)}</div>
                                 </div>
                             </div>
                         `;
@@ -365,7 +413,7 @@
                                 </div>
                                 <div>
                                     <div class="text-xs text-slate-500">Leide transfere para <strong class="text-slate-700">Kauê</strong>:</div>
-                                    <div class="text-lg font-bold text-red-500">${formatBRL(Math.abs(finalBalance))}</div>
+                                    <div class="text-lg font-bold text-red-500">${formatBRL(Math.abs(settlementBalance))}</div>
                                 </div>
                             </div>
                         `;
@@ -377,6 +425,8 @@
                         <h3 class="font-bold text-xl text-slate-700 capitalize">${getMonthName(month)}</h3>
                         <span class="text-xs font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded">${year}</span>
                     </div>
+
+                    ${todaySnapshotHtml}
 
                     <div class="space-y-4">
                         <!-- Saldo Anterior (Se houver) -->
@@ -397,12 +447,12 @@
 
                     <!-- Bloco de Acerto -->
                     <div class="mt-6 pt-4 border-t border-dashed border-slate-200">
-                        <div class="${isJan26 ? 'accumulate-bg border-amber-50' : 'settle-bg border-indigo-50'} rounded-lg p-4 border">
+                        <div class="${isAccumMonth ? 'accumulate-bg border-amber-50' : 'settle-bg border-indigo-50'} rounded-lg p-4 border">
                             ${settlementHtml}
                         </div>
                         <div class="text-center mt-2">
                              <span class="text-[10px] text-slate-400 italic">
-                                ${isJan26 ? 'Valor será somado ao acerto de Fevereiro.' : 'Ao realizar este acerto, o mês zera.'}
+                                ${isAccumMonth ? 'Valor será somado ao acerto do próximo mês.' : 'Ao realizar este acerto, o mês zera.'}
                              </span>
                         </div>
                     </div>
@@ -434,4 +484,3 @@
 </body>
 
 </html>
-
